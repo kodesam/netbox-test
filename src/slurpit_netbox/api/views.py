@@ -192,7 +192,7 @@ class SlurpitDeviceView(NetBoxModelViewSet):
         netbox_devices = Device.objects.all()
         devices_array = [get_device_dict(device) for device in netbox_devices]
 
-        objs = SlurpitMapping.objects.all()
+        objs = SlurpitMapping.objects.filter(mapping_type="devices")
         
         for device in devices_array:
             row = {}

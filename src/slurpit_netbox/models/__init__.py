@@ -117,11 +117,11 @@ def add_default_mandatory_objects(tags):
     SlurpitMapping.objects.all().delete()
     
     mappings = [
-        {"source_field": "hostname", "target_field": "device|name"},
-        {"source_field": "fqdn", "target_field": "device|primary_ip4"},
-        {"source_field": "ipv4", "target_field": "device|primary_ip4"},
-        {"source_field": "device_os", "target_field": "device|platform"},
-        {"source_field": "device_type", "target_field": "device|device_type"},
+        {"source_field": "hostname", "target_field": "device|name", "mapping_type": "device"},
+        {"source_field": "fqdn", "target_field": "device|primary_ip4", "mapping_type": "device"},
+        {"source_field": "ipv4", "target_field": "device|primary_ip4", "mapping_type": "device"},
+        {"source_field": "device_os", "target_field": "device|platform", "mapping_type": "device"},
+        {"source_field": "device_type", "target_field": "device|device_type", "mapping_type": "device"},
     ]
     for mapping in mappings:
         SlurpitMapping.objects.get_or_create(**mapping)

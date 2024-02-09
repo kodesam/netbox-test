@@ -1,6 +1,7 @@
 from core.choices import DataSourceStatusChoices
 from django import forms
 from dcim.choices import DeviceStatusChoices, DeviceAirflowChoices, DeviceStatusChoices
+from ipam.choices import IPRangeStatusChoices
 from dcim.models import DeviceRole, DeviceType, Site, Location, Region, Rack, Device
 from django.utils.translation import gettext_lazy as _
 from netbox.api.fields import ChoiceField
@@ -14,6 +15,8 @@ from .models import SlurpitImportedDevice, SlurpitPlanning, SlurpitSetting
 from .management.choices import SlurpitApplianceTypeChoices
 from extras.models import CustomField
 from django.contrib.contenttypes.models import ContentType
+from ipam.models import IPRange
+from extras.models.tags import Tag
 
 class OnboardingForm(NetBoxModelBulkEditForm):
     model = SlurpitImportedDevice
@@ -161,20 +164,26 @@ class SlurpitMappingForm(BootstrapMixin, forms.Form):
     def __init__(self, *args, **kwargs):
         choice_name = kwargs.pop('choice_name', None) 
         doaction = kwargs.pop('doaction', None) 
+        mapping_type = kwargs.pop('mapping_type', None) 
         super(SlurpitMappingForm, self).__init__(*args, **kwargs)
         
         choices = []
         
-        for field in Device._meta.get_fields():
-            if not field.is_relation or field.one_to_one or (field.many_to_one and field.related_model):
-                choices.append((f'device|{field.name}', f'device | {field.name}'))
+        if mapping_type == "device":
+            for field in Device._meta.get_fields():
+                if not field.is_relation or field.one_to_one or (field.many_to_one and field.related_model):
+                    choices.append((f'device|{field.name}', f'device | {field.name}'))
         
-        # Add custom fields
-        device = ContentType.objects.get(app_label='dcim', model='device')
-        device_custom_fields = CustomField.objects.filter(content_types=device)
+            # Add custom fields
+            device = ContentType.objects.get(app_label='dcim', model='device')
+            device_custom_fields = CustomField.objects.filter(content_types=device)
 
-        for custom_field in device_custom_fields:
-            choices.append((f'device|cf_{custom_field.name}', f'device | {custom_field.name}'))
+            for custom_field in device_custom_fields:
+                choices.append((f'device|cf_{custom_field.name}', f'device | {custom_field.name}'))
+        else:
+            for field in IPRange._meta.get_fields():
+                if not field.is_relation or field.one_to_one or (field.many_to_one and field.related_model):
+                    choices.append((f'iprange|{field.name}', f'iprange | {field.name}'))
         
         self.fields[f'target_field'].choices = choices
 
@@ -184,15 +193,34 @@ class SlurpitMappingForm(BootstrapMixin, forms.Form):
 
 
 class SlurpitDeviceForm(BootstrapMixin, forms.Form):
-    device = DynamicModelChoiceField(
+    mapping_item = DynamicModelChoiceField(
         queryset=Device.objects.all(),
         required=True,
         label=_("Device"),
     )
 
 class SlurpitDeviceStatusForm(BootstrapMixin, forms.Form):
-    device_status = forms.ChoiceField(
+    management_status = forms.ChoiceField(
         label=_('Status'),
         choices=add_blank_choice(DeviceStatusChoices),
         required=False
     )
+
+class SlurpitIPRangeStatusForm(BootstrapMixin, forms.Form):
+    management_status = forms.ChoiceField(
+        label=_('Status'),
+        choices=add_blank_choice(IPRangeStatusChoices),
+        required=False
+    )
+
+class SlurpitIPRangeForm(BootstrapMixin, forms.Form):
+    mapping_item = DynamicModelChoiceField(
+        queryset=IPRange.objects.all(),
+        required=True,
+        label=_("IP Range"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(SlurpitIPRangeForm, self).__init__(*args, **kwargs)
+        slurpit_tag = Tag.objects.get(name="slurpit")
+        self.fields['mapping_item'].queryset = IPRange.objects.filter(tags__in=[slurpit_tag])
