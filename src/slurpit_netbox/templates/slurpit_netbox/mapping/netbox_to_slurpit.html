@@ -12,7 +12,7 @@
     </a>
   </li>
 
-  {% if appliance_type != 'cloud' %}
+  {% if appliance_type != 'push' %}
     <li class="nav-item" role="presentation">
       <a class="nav-tab nav-link {% if request.GET.subtab == 'ipam' %}active{% endif %}" href="?tab=netbox_to_slurpit&subtab=ipam">
         IPAM
@@ -23,7 +23,7 @@
 
 <div class="tab-content">
   <div class=" show {% if request.GET.tab == 'netbox_to_slurpit' %}active{% endif %}">
-    {% if appliance_type != 'cloud' %}
+    {% if appliance_type != 'push' %}
       <!-- <a name="sync"  class="btn btn-sm btn-orange my-2" href="{% url 'plugins:slurpit_netbox:data_mapping_list' %}?sync=true{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">
           <i class="mdi mdi-sync"></i> {% trans "Sync" %}
       </a> -->
@@ -183,13 +183,13 @@
                 
                 
               </div>
-              {% if appliance_type != 'cloud' %}
+              {% if appliance_type != 'push' %}
                 <a class="btn btn-outline-primary btn-sm" style="height:35px;width:100px;" id="push_btn" >{% trans "Push" %}</a>
               {% endif %}
             </div>
             
             <textarea id="payload-result" name="payload-result" cols="40" rows="10" class=" form-control mb-2" placeholder="Payload Result" id="payload-result" style="height: 200px;"></textarea>
-            {% if appliance_type != 'cloud' %}
+            {% if appliance_type != 'push' %}
               <textarea id="push-result" name="push-result" cols="40" rows="10" class=" form-control" placeholder="Push Result" id="push-result" style="height: 100px;"></textarea>
             {% endif %}
           </div>
