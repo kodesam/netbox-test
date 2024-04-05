@@ -161,7 +161,7 @@ def handle_changed():
                 if result.mapped_device.status==DeviceStatusChoices.STATUS_OFFLINE:
                     result.mapped_device.status=DeviceStatusChoices.STATUS_INVENTORY
                 result.mapped_device.custom_field_data.update({
-                    'slurpit_hostname': device.hostname,
+                    # 'slurpit_hostname': device.hostname,
                     'slurpit_fqdn': device.fqdn,
                     'slurpit_ipv4': device.ipv4
                 })    

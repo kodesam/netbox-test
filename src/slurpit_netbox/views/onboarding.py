@@ -65,7 +65,7 @@ class SlurpitImportedDeviceListView(generic.ObjectListView):
             self.table = tables.MigratedDeviceTable
         elif request.GET.get('tab') == "conflicted":
             self.queryset = self.conflicted_queryset
-            self.table = tables.SlurpitImportedDeviceTable
+            self.table = tables.ConflictDeviceTable
         elif request.GET.get('tab') == "onboarded":
             self.queryset = self.onboarded_queryset
 
