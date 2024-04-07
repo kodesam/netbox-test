@@ -102,5 +102,5 @@ def test_plannings(setup):
     assert len(get_plannings()) == 0
 
 def test_devices(setup):
-    assert 1 == 1
+    assert 1 == 2
     print(get_plannings())
