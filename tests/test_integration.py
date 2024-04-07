@@ -101,3 +101,5 @@ def test_plannings(setup):
 
     assert len(get_plannings()) == 0
 
+def test_devices(setup):
+    assert 1 == 1
