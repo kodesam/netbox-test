@@ -103,3 +103,4 @@ def test_plannings(setup):
 
 def test_devices(setup):
     assert 1 == 1
+    print(get_plannings())
