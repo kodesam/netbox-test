@@ -113,6 +113,7 @@ def compare_devices(array1, array2):
         assert row['device_os'] == result['device_os']
         assert row['device_type'] == result['device_type']
         assert row['brand'] == result['brand']
+        assert row['ipv4'] == result['ipv4']
 
 def get_devices():
     with connection() as conn, conn.cursor() as cur:
@@ -153,6 +154,5 @@ def test_devices(setup):
 
     compare_devices(devices, get_devices())
 
+    # Check if Platform & Manufacturer & Device Type are all created on slurpit.
     
-
-
